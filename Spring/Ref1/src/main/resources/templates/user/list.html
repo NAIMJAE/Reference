@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reference - REST API</title>
+    <script>
+        window.onload = function (){
+            const table = document.getElementsByTagName('table')[0];
+
+            /*  페이지 로드시 불러올 데이터 (User 목록)
+                - fetch()를 통해 서버로부터 데이터만 수신 받음
+                - 데이터를 화면에 표시하기 위한 처리는 클라이언트단에서 진행
+                - for문 반복을 통해 수신 받은 데이터를 table로 출력
+             */
+            fetch("/user")
+                .then(response=>response.json())
+                .then(data=>{
+                    console.log(data);
+
+                    for(const user of data){
+                        const tr = `<tr>
+                                        <td>${user.uid}</td>
+                                        <td>${user.name}</td>
+                                        <td>${user.birth}</td>
+                                        <td>${user.age}</td>
+                                        <td>${user.addr}</td>
+                                        <td>
+                                            <a href="#" class="modify" data-uid="${user.uid}">수정</a>
+                                            <a href="#" class="delete" data-uid="${user.uid}">삭제</a>
+                                        </td>
+                                    </tr>`
+                        table.insertAdjacentHTML('beforeend', tr);
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+
+            /*  수정, 삭제 버튼 동적 처리 이벤트
+                - modify 버튼인 경우 modify 페이지 호출 후 uid 파라미터로 전달
+                - delete 버튼인 경우 REST API로 데이터 삭제 후 화면에 표시되는 해당 행 삭제
+             */
+            document.addEventListener('click', function (e){
+
+                if(e.target.classList == "modify"){
+                    // 수정 버튼
+                    const uid = e.target.dataset.uid;
+                    location.href = `/user/modify?uid=${uid}`;
+
+                }else if(e.target.classList == "delete"){
+                    // 삭제 버튼
+                    const tr = e.target.closest('tr');
+                    const uid = e.target.dataset.uid;
+
+                    fetch(`/user/${uid}`, {
+                        method: "DELETE"
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            alert(data.uid + "를 삭제했습니다.");
+                            tr.remove();
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+            })
+
+        }
+    </script>
+</head>
+<body>
+    <h3>User List</h3>
+    <a href="/index">메인</a>
+    <a href="/user/register">등록</a>
+    <table border="1">
+        <tr>
+            <td>아이디</td>
+            <td>이름</td>
+            <td>생년월일</td>
+            <td>나이</td>
+            <td>주소</td>
+            <td>관리</td>
+        </tr>
+    </table>
+</body>
+</html>

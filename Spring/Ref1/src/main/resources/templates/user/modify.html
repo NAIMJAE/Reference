@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reference - REST API</title>
+    <script>
+        window.onload = function (){
+            /*  페이지 로드시 불러올 데이터 (수정할 User 데이터)
+                - URL 파라미터에서 uid 값 추출
+                - fetch()를 통해 서버로부터 해당 uid 데이터만 수신 받음
+                - 데이터를 화면에 표시하기 위한 처리는 클라이언트단에서 진행
+             */
+            const form = document.formUser;
+            // URL 파라미터에서 uid 추출 하기
+            const url = location.href;
+            const param = url.split('?')[1];
+            const uid = param.split('=')[1];
+
+            fetch(`/user/${uid}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // 수신 받은 User 데이터 table에 입력
+                    form.uid.value = data.uid;
+                    form.name.value = data.name;
+                    form.birth.value = data.birth;
+                    form.age.value = data.age;
+                    form.addr.value = data.addr;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+
+            // 수정 완료 요청
+            form.onsubmit = function (e){
+                e.preventDefault();
+
+                // 입력한 데이터를 JSON 데이터로 변환
+                const jsonData = {
+                    "uid" : form.uid.value,
+                    "name" : form.name.value,
+                    "birth" : form.birth.value,
+                    "age" : form.age.value,
+                    "addr" : form.addr.value
+                }
+                fetch("/user", {
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // 수정이 성공적으로 이루어졌을 경우 (null이 아닌 경우)
+                        if (data != null){
+                            alert("수정 되었습니다.");
+                            location.href = "/user/list";
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            }
+        }
+    </script>
+</head>
+<body>
+    <h3>User Modify</h3>
+    <a href="/index">메인</a>
+    <a href="/user/list">목록</a>
+    <form method="post" name="formUser">
+        <table border="1">
+            <tr>
+                <td>아이디</td>
+                <td><input type="text" name="uid" readonly></td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td><input type="text" name="name"></td>
+            </tr>
+            <tr>
+                <td>생년월일</td>
+                <td><input type="date" name="birth"></td>
+            </tr>
+            <tr>
+                <td>나이</td>
+                <td><input type="number" name="age"></td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td><input type="text" name="addr"></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <input type="submit" value="등록">
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
