@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>User::list</title>
+
+    <script>
+
+        window.onload = function (){
+
+            const table = document.getElementsByTagName('table')[0];
+            const btnLogout = document.getElementById('btnLogout');
+
+            // 로그아웃
+            btnLogout.onclick = function (e){
+                e.preventDefault();
+
+                // localStorage에서 토큰 정보 삭제
+                localStorage.removeItem("grantType");
+                localStorage.removeItem("accessToken");
+
+                location.href = "/ref2/user/login"
+            }
+
+            // 목록 조회
+            // localStorage에서 토큰 가져오기
+            const accessToken = localStorage.getItem("accessToken")
+
+            fetch("/ref2/user", {
+                // 요청 헤더에 토큰 정보 담기
+                headers: {"Authorization":`Bearer ${accessToken}`}
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    for(const user of data){
+                        const tr = `<tr>
+                                        <td>${user.uid}</td>
+                                        <td>${user.name}</td>
+                                        <td>${user.birth}</td>
+                                        <td>${user.age}</td>
+                                        <td>${user.addr}</td>
+                                        <td>${user.role}</td>
+                                        <td>
+                                            <a href="#" class="modify" data-uid="${user.uid}">수정</a>
+                                            <a href="#" class="delete" data-uid="${user.uid}">삭제</a>
+                                        </td>
+                                    </tr>`;
+                        table.insertAdjacentHTML('beforeend', tr);
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+
+            // 동적 이벤트 처리
+            document.addEventListener('click', function(e){
+
+                if(e.target.classList == 'modify'){
+                    // 수정
+                    const uid = e.target.dataset.uid;
+
+                    // 수정화면 이동
+                    location.href = `/ref2/user/modify?uid=${uid}`;
+
+                }else if(e.target.classList == 'delete') {
+                    // 삭제
+                    const tr = e.target.closest('tr');
+                    const uid = e.target.dataset.uid;
+
+                    fetch(`/ref2/user/${uid}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data != null){
+                            alert(data.uid + '를 삭제 했습니다.');
+
+                            // 태그 동적 삭제
+                            tr.remove();
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body>
+    <h3>User1 목록</h3>
+
+    <a th:href="@{/index}">메인</a>
+    <a th:href="@{/user/logout}" id="btnLogout">로그아웃</a>
+
+    <table border="1">
+        <tr>
+            <td>아이디</td>
+            <td>이름</td>
+            <td>생년월일</td>
+            <td>나이</td>
+            <td>주소</td>
+            <td>권한</td>
+            <td>관리</td>
+        </tr>
+    </table>
+</body>
+</html>

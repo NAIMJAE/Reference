@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user::register</title>
+
+    <script>
+
+        window.onload = function (){
+
+            const form = document.userForm;
+
+            form.onsubmit = function (e) {
+                e.preventDefault();
+
+                const uid = form.uid.value;
+                const pass = form.pass.value;
+                const name = form.name.value;
+                const birth = form.birth.value;
+                const age = form.age.value;
+                const addr = form.addr.value;
+                const role = form.role.value;
+                const jsonData = {
+                    "uid": uid,
+                    "pass": pass,
+                    "name": name,
+                    "birth": birth,
+                    "age": age,
+                    "addr": addr,
+                    "role": role
+                }
+                fetch("/ref2/user/register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => {response.json()})
+                    .then(data => {
+                        console.log(data);
+                        location.href = "/ref2/user/login";
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        alert("아닌데");
+                    });
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <h3>user::register</h3>
+    <form method="post" name="userForm">
+        <table border="1">
+            <tr>
+                <th>아이디</th>
+                <th><input type="text" name="uid"></th>
+            </tr>
+            <tr>
+                <th>비밀번호</th>
+                <th><input type="password" name="pass"></th>
+            </tr>
+            <tr>
+                <th>이름</th>
+                <th><input type="text" name="name"></th>
+            </tr>
+            <tr>
+                <th>생년월일</th>
+                <th><input type="date" name="birth"></th>
+            </tr>
+            <tr>
+                <th>나이</th>
+                <th><input type="number" name="age"></th>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <th><input type="text" name="addr"></th>
+            </tr>
+            <tr>
+                <th>권한</th>
+                <th>
+                    <select name="role">
+                        <option value="ADMIN">최고관리자</option>
+                        <option value="MANAGER">운영자</option>
+                        <option value="USER">일반사용자</option>
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="2" align="right">
+                    <input type="submit" value="가입">
+                </th>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

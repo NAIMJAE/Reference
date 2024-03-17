@@ -1,0 +1,41 @@
+logging:
+    file:
+        name: log/ref2.log
+    level:
+        jdbc:
+            connection: info
+            resultsettable: info
+            sqlonly: info
+            sqltiming: info
+        root: info
+
+server:
+    port: 8080
+    servlet:
+        context-path: /ref2
+
+spring:
+    application:
+        name: ref2
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: abc1234
+        url: jdbc:mysql://127.0.0.1:3306/reference
+        username: naimjae
+    devtools:
+        livereload:
+            enabled: true
+    jpa:
+        database: mysql
+        hibernate:
+            ddl-auto: update
+            naming:
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                format_sql: true
+                show_sql: true
+
+jwt:
+    issuer: naimjae5985@gmail.com
+    secret: MTGsc3q6y9LXp1JN3c4gl1ykY1GUnXR2

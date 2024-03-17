@@ -25,17 +25,15 @@ import java.util.List;
     - 주로 RESTful API에서 자원의 식별자를 전달할 때 사용
 
     @RestController
+    - @ResponseBody + @Controller
     - API 요청을 처리하는 메서드의 결과를 응답 객체 본문에 출력시키는 클래스
     - 해당 클래스가 RESTful 웹 서비스의 엔드포인트를 처리하는 컨트롤러임을 나타냄
     - 어노테이션이 지정된 클래스의 각 메서드는 HTTP 요청을 처리하고, 클라이언트에게 JSON, XML 등의 형식으로 응답을 반환
 
-    @ResponseEntity
+    ResponseEntity
     - API를 요청한 사용자에게 응답데이터를 구성해 클라이언트에게 부가정보 제공하기 위한 클래스
     - 일반적으로 상태코드(header), 본문 내용(body)을 구성해서 제공
-*/
 
-/*
-    ResponseEntity
     - 일반적인 Controller를 이용한 HTTP 통신에서는 클라이언트가 요청한 작업을 수행한 뒤 HTTP페이지를 forward하는 방식을 사용
     - 이 방식을 사용하면 페이지를 새로 로드해야 함
     - 페이지가 로드 될때 처리해야하는 작업같은 경우에는 일반적인 통신 방식 사용
@@ -43,7 +41,7 @@ import java.util.List;
     - 그런데 새로운 페이지 로드가 발생하면 안되는, 사용자의 동작에 따라서 진행되는 동적인 작업 요청 같은 경우 ResponseEntity 사용
     - 보통 이러한 요청을 처리하기 위해 자바스크립트의 fetch를 사용하며, fetch의 response값은 JSON 데이터 형식
     - 그래서 Controller에서 사용자의 요청을 처리한 뒤 HTTP통신이 아닌 JSON과 같은 데이터 형식을 리턴하기 위해 ResponseEntity 사용
-    - ResponseEntity은 응답 상태 코드, 데이터, 해당 작업의 결과들을 설정해 전송할 수 있음
+    - ★ ResponseEntity은 응답 상태 코드, 데이터, 해당 작업의 결과들을 설정해 전송할 수 있음 ★
  */
 
 @Slf4j
